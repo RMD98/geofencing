@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('benchmark', function (Blueprint $table) {
-            $table->id();
+            $table->string('id');
             $table->string('koord_id');
             $table->string('latitude');
             $table->string('longitude');

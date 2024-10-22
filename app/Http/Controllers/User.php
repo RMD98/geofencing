@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Illuminate\Console\Command;
 use DB;
-class Benchmark extends Controller
+use DateTime;
+class User extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +16,6 @@ class Benchmark extends Controller
     public function index()
     {
         //
-        $data = DB::table('benchmark')->get();
-
-        return response()->json($data);
-
     }
 
     /**
@@ -40,17 +37,12 @@ class Benchmark extends Controller
     public function store(Request $request)
     {
         //
-        $id = IdGenerator::generate(['table' => 'benchmark', 'field'=>'id','length' => 5, 'prefix' => 'ITN']);
-        
-          
-        $data = array(
-            'id' =>$id,
-            'koord_id' =>$id,
-            'latitude' =>$request->lat,
-            'longitude' =>$request->long,
-        );
-        DB::table('benchmark')->insert($data);
-        return response()->json();
+        $now = new DateTime('now');
+        $rand = substr(str_shuffle(MD5(microtime())), 0, 10);
+
+        DB::table('users')->insert(['name'=>'Test','email'=>$rand.'@asd.com','password'=>'test','created_at' => $now->format('Y-m-d H:i:s')]);
+
+        // return Command::Success;
     }
 
     /**

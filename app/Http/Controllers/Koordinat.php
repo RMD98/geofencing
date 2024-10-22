@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use DateTime;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
+
 class Koordinat extends Controller
 {
     /**
@@ -38,11 +40,14 @@ class Koordinat extends Controller
      */
     public function store(Request $request)
     {
+        $kid = IdGenerator::generate(['table' => 'koord_point', 'field'=>'id','length' => 5, 'prefix' => 'ITN']);
+
         //
         $now = new DateTime('now');
         // dd($now->format('Y-m-d H:i:s')); 
         // dd($now);
         $data = array(
+            'id' => $kid,
             'user_id' => $request->id,
             'latitude'=> $request->lat,
             'longitude' => $request->long,

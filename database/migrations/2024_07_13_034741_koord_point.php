@@ -15,12 +15,12 @@ return new class extends Migration
     {
         //
         Schema::create('koord_point', function (Blueprint $table) {
-            $table->id();
+            $table->string('id');
             $table->string('user_id');
             $table->string('latitude');
             $table->string('longitude');
             // $table->geography('coordinates', subtype: 'point', srid: 4326);
-            $table->string('status')->default('checked');
+            $table->string('status')->default('not checked');
             $table->timestamps();
         });
     }

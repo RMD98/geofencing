@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Koordinat;
 use App\Http\Controllers\Benchmark;
+use App\Http\Controllers\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,7 @@ Route::get('/benchmark',[Benchmark::class,'index']);
 Route::post('/add_bm',[Benchmark::class,'store']);
 Route::get('/koordinat',[Koordinat::class,'index']);
 Route::post('/add_koord',[Koordinat::class,'store']);
+Route::get('/cronjob',[User::class,'store']);
 Route::get('/', function () {
     return view('welcome');
 });

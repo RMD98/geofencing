@@ -84,19 +84,22 @@
                 }
             })
             const randId = Math.random().toString(36).substring(2,7);
+            console.log('{{secure_url('')}}')
             function check(){
                 // Now I can use the promise followed by .then() 
                 // to make use of the values anywhere in the program
+                let desc = document.getElementById('koord').value
                 getLocationPromise.then((location) => {
-                    // console.log(koord)
+                    // console.log(window.location.pathname)
                     $.ajax(
                             {
+                                // url : "{{secure_url('')}}/add_koord",
                                 url : "/add_koord",
                                 type :"POST",
                                 // dataType: "json",
                                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                                 data : {
-                                    id : randId,
+                                    id : desc,
                                     lat : location.latitude,
                                     long :  location.longitude, 
                                 },
@@ -144,6 +147,7 @@
                     if (loc > Math.max.apply(Math,adjDist)){
                         $.ajax(
                             {
+                                // url : "{{secure_url('')}}/add_bm",
                                 url : "/add_bm",
                                 type :"POST",
                                 // dataType: "json",
@@ -228,6 +232,7 @@
             };
 
             $.ajaxSetup({async:false});
+            // $.get('{{secure_url('')}}/benchmark',{},function(data,status,jqXHR){
             $.get('/benchmark',{},function(data,status,jqXHR){
                 for(i=0; i<=data.length-1;i++){
                     benchmarkId.push(data[i].koord_id);

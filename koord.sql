@@ -12,6 +12,34 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping structure for table gmap.benchmark
+DROP TABLE IF EXISTS `benchmark`;
+CREATE TABLE IF NOT EXISTS `benchmark` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `koord_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `latitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `longitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table gmap.benchmark: ~11 rows (approximately)
+DELETE FROM `benchmark`;
+/*!40000 ALTER TABLE `benchmark` DISABLE KEYS */;
+INSERT INTO `benchmark` (`id`, `koord_id`, `latitude`, `longitude`, `created_at`, `updated_at`) VALUES
+	(1, 'BM0', '-6.89608', '107.63534', NULL, NULL),
+	(2, 'BM1', '-6.89703', '107.6355', NULL, NULL),
+	(3, 'BM2', '-6.89793', '107.63548', NULL, NULL),
+	(4, 'BM3', '-6.89803', '107.63593', NULL, NULL),
+	(5, 'BM4', '-6.89832', '107.63699', NULL, NULL),
+	(6, 'BM5', '-6.89755', '107.63751', NULL, NULL),
+	(7, 'BM6', '-6.89675', '107.63772', NULL, NULL),
+	(8, 'BM7', '-6.89642', '107.63757', NULL, NULL),
+	(9, 'BM8', '-6.89628', '107.63689', NULL, NULL),
+	(10, 'BM9', '-6.89611', '107.636', NULL, NULL);
+/*!40000 ALTER TABLE `benchmark` ENABLE KEYS */;
+
 -- Dumping structure for table gmap.failed_jobs
 DROP TABLE IF EXISTS `failed_jobs`;
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
@@ -38,27 +66,20 @@ CREATE TABLE IF NOT EXISTS `koord_point` (
   `user_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `latitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `longitude` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'point',
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'checked',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table gmap.koord_point: ~11 rows (approximately)
+-- Dumping data for table gmap.koord_point: ~2 rows (approximately)
 DELETE FROM `koord_point`;
 /*!40000 ALTER TABLE `koord_point` DISABLE KEYS */;
 INSERT INTO `koord_point` (`id`, `user_id`, `latitude`, `longitude`, `status`, `created_at`, `updated_at`) VALUES
-	(1, 'BM0', '107.63534', '-6.89608', 'point', NULL, NULL),
-	(2, 'BM1', '107.6355', '-6.89703', 'point', NULL, NULL),
-	(3, 'BM2', '107.63548', '-6.89793', 'point', NULL, NULL),
-	(4, 'BM3', '107.63593', '-6.89803', 'point', NULL, NULL),
-	(5, 'BM4', '107.63699', '-6.89832', 'point', NULL, NULL),
-	(6, 'BM5', '107.63751', '-6.89755', 'point', NULL, NULL),
-	(7, 'BM6', '107.63772', '-6.89675', 'point', NULL, NULL),
-	(8, 'BM7', '107.63757', '-6.89642', 'point', NULL, NULL),
-	(9, 'BM8', '107.63689', '-6.89628', 'point', NULL, NULL),
-	(10, 'BM9', '107.636', '-6.89611', 'point', NULL, NULL),
-	(11, 'ed78z', '107.63534', '-6.89608', 'point', '2024-08-20 04:09:30', NULL);
+	(1, 'dyki1', '-7.365067499999999', '108.50575899999998', 'checked', '2024-09-11 12:04:40', NULL),
+	(2, 'w93fk', '-7.365067499999999', '108.50575899999998', 'checked', '2024-09-12 00:57:20', NULL),
+	(3, 'nwpl8', '-7.365076', '108.505771', 'checked', '2024-09-12 01:08:33', NULL),
+	(4, 'f74a9', '-7.365067499999999', '108.50575899999998', 'checked', '2024-09-13 01:34:45', NULL);
 /*!40000 ALTER TABLE `koord_point` ENABLE KEYS */;
 
 -- Dumping structure for table gmap.migrations
@@ -68,9 +89,9 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table gmap.migrations: ~5 rows (approximately)
+-- Dumping data for table gmap.migrations: ~6 rows (approximately)
 DELETE FROM `migrations`;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -78,7 +99,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(2, '2014_10_12_100000_create_password_resets_table', 1),
 	(3, '2019_08_19_000000_create_failed_jobs_table', 1),
 	(4, '2019_12_14_000001_create_personal_access_tokens_table', 1),
-	(5, '2024_07_13_034741_koord_point', 1);
+	(5, '2024_07_13_034741_koord_point', 1),
+	(6, '2024_08_29_135445_create_benchmark', 1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 
 -- Dumping structure for table gmap.password_resets
@@ -131,11 +153,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table gmap.users: ~0 rows (approximately)
+-- Dumping data for table gmap.users: ~4 rows (approximately)
 DELETE FROM `users`;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+	(1, 'Test', 'asd@asd.com', NULL, 'test', NULL, NULL, NULL),
+	(3, 'Test', 'e9d34e0cff@asd.com', NULL, 'test', NULL, NULL, NULL),
+	(4, 'Test', 'b12d18071a@asd.com', NULL, 'test', NULL, NULL, NULL),
+	(5, 'Test', '20d25dc73a@asd.com', NULL, 'test', NULL, NULL, NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

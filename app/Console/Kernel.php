@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // $schedule->exec('node ')
         $schedule->command('upbm:cron')->everyMinute();
+        // $schedule->exec('node /js/updateBM.js')->everyMinute();
     }
 
     /**
