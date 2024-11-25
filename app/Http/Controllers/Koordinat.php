@@ -40,14 +40,16 @@ class Koordinat extends Controller
      */
     public function store(Request $request)
     {
-        $kid = IdGenerator::generate(['table' => 'koord_point', 'field'=>'id','length' => 5, 'prefix' => 'ITN']);
+        $kid = IdGenerator::generate(['table' => 'koord_point', 'field'=>'id','length' => 8, 'prefix' => 'ITN']);
 
-        //
+        $last = DB::table('koord_point')->latest()->first();
+        $id = explode('-',$last->id); 
+        // dd($id);
         $now = new DateTime('now');
         // dd($now->format('Y-m-d H:i:s')); 
         // dd($now);
         $data = array(
-            'id' => $kid,
+            'id' => 'ITN-'.$id[1]+1,
             'user_id' => $request->id,
             'latitude'=> $request->lat,
             'longitude' => $request->long,

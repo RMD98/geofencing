@@ -15,7 +15,7 @@ class Benchmark extends Controller
     public function index()
     {
         //
-        $data = DB::table('benchmark')->get();
+        $data = DB::table('benchmark')->orderby('latitude','desc')->orderby('longitude','desc')->get();
 
         return response()->json($data);
 

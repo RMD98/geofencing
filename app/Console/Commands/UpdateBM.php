@@ -4,11 +4,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use DateTime;
+
 class UpdateBM extends Command
 {
     public $gkoord;
     public $bm;
-
+    public $cent;
     /**
      * The name and signature of the console command.
      *
@@ -46,12 +48,12 @@ class UpdateBM extends Command
                 }
             }
         };
-        // foreach($clust as $key=>$value){
-        //     if(count($value)<10){
-        //         unset($clust[$key]);
-        //     }
+        foreach($clust as $key=>$value){
+            if(count($value)<5){
+                unset($clust[$key]);
+            }
             // \Log::info($this->gkoord);
-        // };
+        };
 
         return $clust;
     }
@@ -85,13 +87,14 @@ class UpdateBM extends Command
         // foreach($this->gkoord as $key=>$value){
             // }
         $adj=[];
-        $gkoord = json_decode($this->gkoord);
+        $bm = DB::table('benchmark')->where('id','!=','Centroid')->get();
+        $gkoord = $this->gkoord;
         foreach ($kord as $key => $value) {
             $adjDist =[];
             $id_koord = array_search($key,array_column($gkoord,'id'));
             $point = $gkoord[$id_koord];
             //mencari titik tetangga 
-            foreach($this->bm as $keys =>$values){
+            foreach($bm as $keys =>$values){
                 $dist = $this->hitungJrk([$point->longitude,$point->latitude],[$values->longitude,$values->latitude]);
                 array_push($adjDist,['bm'=>$values->id,'dist'=>$dist]);
             }
@@ -107,50 +110,107 @@ class UpdateBM extends Command
         return $adj;
     }
     public function updateBM($comp){
-        $gkoord = json_decode($this->gkoord);
-        $bm = json_decode($this->bm);
+        $gkoord = $this->gkoord;
         // \Log::info($comp);
-        $cent = $this->centroid();
+        $cent = [$this->cent->longitude,$this->cent->latitude];
         foreach($comp as $key=>$value){
-            $point = array_search($key,array_column($gkoord,'id'));
-            //mengambil koordinat bm berdasarkan ID
-            $dist = $this->hitungJrk($cent,[$gkoord[$point]->longitude,$gkoord[$point]->latitude]);
-            $adjDist =[];
-            // $dist = 0;
-            foreach($value as $i=>$val){
-                foreach ($val as $j => $id) {
-                    # code...
-                    $adjPoint = array_search($id['bm'],array_column($bm,'id'));
-                    $temp = $this->hitungJrk($cent,[$bm[$adjPoint]->longitude,$bm[$adjPoint]->latitude]);
-                    array_push($adjDist,$temp);
-                }
-            };
-            if ($dist > max($adjDist)){
-                // \Log::info($dist);
-                $id = IdGenerator::generate(['table' => 'benchmark', 'field'=>'id','length' => 5, 'prefix' => 'BM']);
+                $bm = json_decode(DB::table('benchmark')->where('id','!=','Centroid')->get());
+                $point = array_search($key,array_column($gkoord,'id'));
+                $now = new DateTime('now');
+                if(count($bm)<10){
+                    if(DB::table('benchmark')->where('id','!=','Centroid')->count() == 0){
+                        $newid = 0;
+                    }else{
+                        $last = DB::table('benchmark')->where('id','!=','Centroid')->orderBy('id','desc')->first();
+                        $newid = explode('-',$last->id)[1] + 1; 
+                        // \Log::info(explode('-',$last->id)[1]);
+                    }
+                    $data = array(
+                        'id' => 'BM-'.$newid,
+                        'koord_id' =>$key,
+                        'latitude' =>$gkoord[$point]->latitude,
+                        'longitude' =>$gkoord[$point]->longitude,
+                        'created_at' => $now->format('Y-m-d H:i:s')
         
-                $data = array(
-                    'id' =>$id,
-                    'koord_id' =>$key,
-                    'latitude' =>$gkoord[$point]->latitude,
-                    'longitude' =>$$gkoord[$point]->longitude,
-                );
-                DB::table('benchmark')->insert($data);
-                // if()
-            }else{
-            }
+                    );
+                    DB::table('benchmark')->insert($data);
+                    // if()
+                    $log = array(
+                        'new BM' => $data,
+                        'time-stamp' => $now->format('Y-m-d H:i:s')
+                    );
+                    \Log::info($log);
+                } else {
+                    $adj = $this->neighbour($comp);
+                    //mengambil koordinat bm berdasarkan ID
+                    $dist = $this->hitungJrk($cent,[$gkoord[$point]->longitude,$gkoord[$point]->latitude]);
+                    $adjDist =[];
+                    // $dist = 0;
+                    $adjBm = [];
+                    foreach($adj as $i=>$val){
+                        foreach ($val[0] as $j => $id) {
+                            # code...
+                            $adjPoint = array_search($id['bm'],array_column($bm,'id'));
+                            $temp = $this->hitungJrk($cent,[$bm[$adjPoint]->longitude,$bm[$adjPoint]->latitude]);
+                            array_push($adjDist,$temp);
+                            array_push($adjBm,$id['bm']);
+                        }
+                    };
+                    // \Log::info($adj);
+                    if ($dist > max($adjDist)){
+                        // \Log::info($dist);
+                        // $id = IdGenerator::generate(['table' => 'benchmark', 'field'=>'id','length' => 5, 'prefix' => 'BM']);
+                
+                    
             
+                        // $last = DB::table('benchmark')->where('id','!=','Centroid')->orderBy('id','desc')->first();
+                        $last = DB::table('benchmark')->where('id','!=','Centroid')->latest()->first();
+                        $newid = explode('-',$last->id)[1] + 1; 
+                        $data = array(
+                            'id' => 'BM-'.$newid,
+                            'koord_id' =>$key,
+                            'latitude' =>$gkoord[$point]->latitude,
+                            'longitude' =>$gkoord[$point]->longitude,
+                            'created_at' => $now->format('Y-m-d H:i:s')
+
+                        );
+                        DB::table('benchmark')->insert($data);
+                        // if()
+                        foreach ($adjBm as $key => $id) {
+                            DB::table('benchmark')->where('id',$id)->delete();
+                        }
+                        $log = array(
+                            'new BM' => $data,
+                            'removed BM' => $adjBm,
+                            'time-stamp' => $now->format('Y-m-d H:i:s')
+                        );
+                        \Log::info($log);
+                        
+                }else{
+                }
+            }
+            foreach ($this->gkoord as $key => $value) {
+                // \Log::info($value->id);
+                DB::table('koord_point')->where('id',$value->id)->update(['status'=>'CHECKED']);
+                # code...
+            }
         }
         // \Log::info($cent);
     }
     public function handle()
     {   
-        $this->bm = DB::table('benchmark')->get();
-        $this->gkoord =DB::table('koord_point')->get();
-        // $valpoint = $this->clustering();
-        // $neigh =$this->neighbour($valpoint);
-        // $upbm = $this->updateBM($neigh);
-        \Log::info($this->centroid());
+        $this->bm = json_decode(DB::table('benchmark')->where('id','!=','Centroid')->get());
+        $this->gkoord =json_decode(DB::table('koord_point')->where('status','not checked')->skip(0)->take(50)->get());
+        $this->cent = DB::table('benchmark')->where('id','Centroid')->first();
+        \Log::info($this->cent->id);
+        $valpoint = $this->clustering();
+        if(count($this->bm)>0){
+            $neigh =$this->neighbour($valpoint);
+            $upbm = $this->updateBM($neigh);
+        }else{
+            $upbm = $this->updateBM($valpoint);
+        }
+        // \Log::info($this->cent->latitude);
         // $rand = substr(str_shuffle(MD5(microtime())), 0, 10);
         // $koord = DB::table('koord_point')->get();
      

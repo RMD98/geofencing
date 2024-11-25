@@ -15,7 +15,7 @@ return new class extends Migration
     {
         //
         Schema::create('koord_point', function (Blueprint $table) {
-            $table->string('id');
+            $table->uuid('id')->uniqid(['ITN']);
             $table->string('user_id');
             $table->string('latitude');
             $table->string('longitude');
